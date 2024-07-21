@@ -1,15 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Web Page</title>
+    <title>Muse Test</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <h1>Welcome to My Web Page</h1>
-    
-    <p>This is a blank HTML file. You can start adding your content here.</p>
+    <h2>Muse Infinite Blind Test</h2>
 
-    <audio controls>
-        <source src="http://localhost:3000/play" type="audio/mpeg">
+    <audio id="audio">
+        <source id="audio_src" src="http://localhost:3000/play" type="audio/mpeg">
     </audio>
+
+    <div id="countdown" class="countdown">10</div>
+    <div id="currentsong">Click Play</div>
+    <br>
+
+    <button class="playbutton" onclick="playAudio()">Play</button>
+
+    <input type="text" id="songname" placeholder="Enter the song name">
+
+    <script>
+        function playAudio() {
+            document.getElementById('audio_src').src = "http://localhost:3000/play?time=" + new Date().getTime();
+            document.getElementById('audio').load();
+            document.getElementById('audio').play();
+
+            const countdown = document.getElementById('countdown');
+            const currentsong = document.getElementById('currentsong');
+            var timeLeft = 10;
+            countdown.innerHTML = timeLeft;
+            currentsong.innerHTML = "Playing...";
+            var timer = setInterval(function() {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    countdown.innerHTML = 0;
+                    fetch('http://localhost:3000/currentsong', {method: 'GET'})
+                        .then(response => response.text()
+                        .then(text => document.getElementById('currentsong').innerHTML = "The song was : " +  text));
+                } else {
+                    countdown.innerHTML = timeLeft;
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

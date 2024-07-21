@@ -4,8 +4,11 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const mm = require('music-metadata');
 
-
 const app = express();
+
+let currentSong = null;
+
+app.use(express.static(path.join(__dirname, '/../client')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../client/index.html'));
@@ -29,12 +32,13 @@ app.get('/play', (req, res) => {
             //console.log(metadata.format);
             const bitrate = metadata.format.bitrate;
             const length = metadata.format.duration;
+            const name = metadata.common.title;
+            currentSong = name;
 
             const bytesPerSecond = bitrate / 8;
             const fileSize = stats.size;
             const duration = 10;
             const startSec = Math.floor(Math.random() * (length - duration));
-            console.log('startSec', startSec);
             const startByte = startSec * bytesPerSecond;
             const endByte = startByte + duration * bytesPerSecond;
             if (endByte > fileSize) {
@@ -67,7 +71,7 @@ app.get('/play', (req, res) => {
                     'Content-Length': duration * bytesPerSecond,
                     'Content-Range': `bytes ${startByte}-${endByte}/${duration * bytesPerSecond}`,
                     'Accept-Ranges': 'bytes',
-                    'Cache-Control': 'no-store'
+                    'Cache-Control': 'no-cache'
                 });
     
                 const stream = fs.createReadStream(filePath, { start: startByte, end: endByte });
@@ -76,6 +80,10 @@ app.get('/play', (req, res) => {
         });
         
     });
+});
+
+app.get('/currentsong', (req, res) => {
+    res.send(currentSong);
 });
 
 app.listen(3000, () => {
