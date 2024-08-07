@@ -1,4 +1,5 @@
 let songList = [];
+var selectedIndex;
 
 async function suggest() {
     const input = document.getElementById('songinput');
@@ -15,6 +16,7 @@ async function suggest() {
             child.remove();
         }
     }
+    selectedIndex = undefined;
     const value = input.value;
     if (value === '') {
         return;
@@ -44,6 +46,36 @@ async function suggest() {
             acList.remove();
         });
         acList.appendChild(div);
+    }
+} 
+
+function select(e) {
+    const acList = document.getElementById('ac-list');
+    if (acList) {
+        const children = acList.children;
+        if (children.length === 0) {
+            return;
+        }
+        if (e.keyCode === 9) {
+            // Tab
+            e.preventDefault();
+            if (children.length === 1) {
+                children[0].click();
+            }
+            if (selectedIndex === undefined) {
+                selectedIndex = 0;
+            } else {
+                children[selectedIndex].classList.remove('selected');
+                selectedIndex = (selectedIndex + 1) % children.length;
+            }
+            children[selectedIndex].classList.add('selected');
+        } else if (e.keyCode === 13) {
+            // Enter
+            e.preventDefault();
+            if (selectedIndex !== undefined) {
+                children[selectedIndex].click();
+            }
+        }
     }
 }
 

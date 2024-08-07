@@ -13,17 +13,26 @@
         <source id="audio_src" src="http://localhost:3000/play" type="audio/mpeg">
     </audio>
 
-    <div id="countdown" class="countdown">10</div>
-    <div id="currentsong">Click Play</div>
+    <div id="countdown">10</div>
+    <div id="playing">Click Play</div>
     <br>
 
     <button class="playbutton" onclick="playAudio()">Play</button>
 
     <div class="autocomplete">
-        <input type="text" id="songinput" placeholder="Enter the song name..." oninput="suggest()">
+        <input type="text" id="songinput" placeholder="Enter the song name...">
     </div>
     <div id="song"></div>
     <div id="result"></div>
+
+    <script>
+        document.getElementById('songinput').addEventListener('input', suggest);
+        document.getElementById('songinput').addEventListener('keydown', select);
+
+        document.getElementById('audio').addEventListener('play', startCountdown);
+        document.getElementById('audio').addEventListener('timeupdate', updateCountdown);
+        document.getElementById('audio').addEventListener('ended', timeUp);
+    </script>
 
 </body>
 </html>

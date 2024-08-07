@@ -63,39 +63,16 @@ app.get('/play', (req, res) => {
             if (endByte > fileSize) {
                 endByte = fileSize;
             }
-            
-            /*const range = req.headers.range;
-            if (range) {
-                const chunkSize = 1024 * 1024;
-                const startRange = Number(range.replace(/\D/g, ""));
-                const start = startByte + startRange;
-                const end = Math.min(start + chunkSize, endByte);
-                console.log('start', start);
-                console.log('end', end);
-    
-                res.writeHead(206, {
-                    'Content-Type': 'audio/mpeg',
-                    'Content-Length': end - start,
-                    'Content-Range': `bytes ${start}-${end}/${duration * bytesPerSecond}`,
-                    'Accept-Ranges': 'bytes',
-                });
-    
-                const stream = fs.createReadStream(filePath, { start, end });
-                
-                stream.pipe(res);
-            
-            } else {*/
-                res.writeHead(200, {
-                    'Content-Type': 'audio/mpeg',
-                    'Content-Length': duration * bytesPerSecond,
-                    'Content-Range': `bytes ${startByte}-${endByte}/${duration * bytesPerSecond}`,
-                    'Accept-Ranges': 'bytes',
-                    'Cache-Control': 'no-cache'
-                });
-    
-                const stream = fs.createReadStream(filePath, { start: startByte, end: endByte });
-                stream.pipe(res);
-            //}
+            res.writeHead(200, {
+                'Content-Type': 'audio/mpeg',
+                'Content-Length': duration * bytesPerSecond,
+                'Content-Range': `bytes ${startByte}-${endByte}/${duration * bytesPerSecond}`,
+                'Accept-Ranges': 'bytes',
+                'Cache-Control': 'no-cache'
+            });
+
+            const stream = fs.createReadStream(filePath, { start: startByte, end: endByte });
+            stream.pipe(res);
         });
         
     });
