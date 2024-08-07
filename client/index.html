@@ -17,7 +17,7 @@
     <div id="playing">Click Play</div>
     <br>
 
-    <button class="playbutton" onclick="playAudio()">Play</button>
+    <button id=playbutton onclick="playAudio()">Play</button>
 
     <div class="autocomplete">
         <input type="text" id="songinput" placeholder="Enter the song name...">
@@ -32,6 +32,15 @@
         document.getElementById('audio').addEventListener('play', startCountdown);
         document.getElementById('audio').addEventListener('timeupdate', updateCountdown);
         document.getElementById('audio').addEventListener('ended', timeUp);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.keyCode === 13) {
+                if (document.getElementById('songinput') === document.activeElement) {
+                    return;
+                }
+                document.getElementById("playbutton").click();
+            }
+        });
     </script>
 
 </body>

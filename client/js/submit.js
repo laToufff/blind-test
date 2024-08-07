@@ -56,12 +56,9 @@ function select(e) {
         if (children.length === 0) {
             return;
         }
-        if (e.keyCode === 9) {
-            // Tab
+        if (e.keyCode === 9 || e.keyCode === 40) {
+            // Tab or Down Arrow
             e.preventDefault();
-            if (children.length === 1) {
-                children[0].click();
-            }
             if (selectedIndex === undefined) {
                 selectedIndex = 0;
             } else {
@@ -72,6 +69,9 @@ function select(e) {
         } else if (e.keyCode === 13) {
             // Enter
             e.preventDefault();
+            if (children.length === 1) {
+                children[0].click();
+            }
             if (selectedIndex !== undefined) {
                 children[selectedIndex].click();
             }

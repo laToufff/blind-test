@@ -11,6 +11,7 @@ function playAudio() {
         return;
     }
     songInput.disabled = false;
+    songInput.focus();
     songDiv.innerText = "";
     resultDiv.innerText = "";
 
@@ -43,9 +44,9 @@ async function getCurrentSong() {
 async function timeUp() {
     const playingDiv= document.getElementById('playing');
     const songInput = document.getElementById('songinput');
+    const resultDiv = document.getElementById('result');
     const songDiv = document.getElementById('song');
     const acList = document.getElementById('ac-list');
-    const cover = document.getElementById('cover');
 
     const song = await getCurrentSong();
     songDiv.innerText = song;
@@ -55,5 +56,7 @@ async function timeUp() {
     if(acList) {
         acList.remove();
     }
-    cover.src = "http://localhost:3000/currentcover?time=" + new Date().getTime();
+    if (resultDiv.innerText !== "Correct!") {
+        resultDiv.innerText = "Too slow!";
+    }
 }
