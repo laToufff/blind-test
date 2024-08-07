@@ -1,12 +1,32 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const ffmpeg = require('fluent-ffmpeg');
 const mm = require('music-metadata');
+const bodyParser = require('body-parser');
 
 const app = express();
 
+app.use(bodyParser.json());
+
 let currentSong = null;
+
+function getSongList() {
+    const fileList = fs.readdirSync(path.join(__dirname + '/../songs'));
+    const songList = fileList.filter(file => file.endsWith('.mp3'));
+    return songList;
+}
+
+async function getSongNames(callback) {
+    let songNames = [];
+    const songList = getSongList();
+    for (const song of songList) {
+        const filePath = path.join(__dirname + '/../songs/'+song);
+        const metadata = await mm.parseFile(filePath)
+        const name = metadata.common.title;
+        songNames.push(name);
+    };
+    callback(songNames);
+}
 
 app.use(express.static(path.join(__dirname, '/../client')));
 
@@ -15,8 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/play', (req, res) => {
-    const fileList = fs.readdirSync(path.join(__dirname + '/../songs'));
-    const songList = fileList.filter(file => file.endsWith('.mp3'));
+    const songList = getSongList();
     const randi = Math.floor(Math.random() * songList.length);
 
     const filePath = path.join(__dirname + '/../songs/'+songList[randi]);
@@ -82,8 +101,23 @@ app.get('/play', (req, res) => {
     });
 });
 
+app.get('/songs', (req, res) => {
+    getSongNames(songNames => {
+        res.send(songNames);
+    });
+});
+
 app.get('/currentsong', (req, res) => {
     res.send(currentSong);
+});
+
+app.post('/submit', (req, res) => {
+    const songname = req.body.songname;
+    if (songname.toLowerCase() === currentSong.toLowerCase()) {
+        res.send(true);
+    } else {
+        res.send(false);
+    }
 });
 
 app.listen(3000, () => {

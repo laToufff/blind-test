@@ -3,6 +3,8 @@
 <head>
     <title>Muse Test</title>
     <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/play.js"></script>
+    <script src="./js/submit.js"></script>
 </head>
 <body>
     <h2>Muse Infinite Blind Test</h2>
@@ -17,32 +19,11 @@
 
     <button class="playbutton" onclick="playAudio()">Play</button>
 
-    <input type="text" id="songname" placeholder="Enter the song name">
+    <div class="autocomplete">
+        <input type="text" id="songinput" placeholder="Enter the song name..." oninput="suggest()">
+    </div>
+    <div id="song"></div>
+    <div id="result"></div>
 
-    <script>
-        function playAudio() {
-            document.getElementById('audio_src').src = "http://localhost:3000/play?time=" + new Date().getTime();
-            document.getElementById('audio').load();
-            document.getElementById('audio').play();
-
-            const countdown = document.getElementById('countdown');
-            const currentsong = document.getElementById('currentsong');
-            var timeLeft = 10;
-            countdown.innerHTML = timeLeft;
-            currentsong.innerHTML = "Playing...";
-            var timer = setInterval(function() {
-                timeLeft--;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    countdown.innerHTML = 0;
-                    fetch('http://localhost:3000/currentsong', {method: 'GET'})
-                        .then(response => response.text()
-                        .then(text => document.getElementById('currentsong').innerHTML = "The song was : " +  text));
-                } else {
-                    countdown.innerHTML = timeLeft;
-                }
-            }, 1000);
-        }
-    </script>
 </body>
 </html>
