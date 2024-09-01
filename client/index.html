@@ -3,6 +3,7 @@
 <head>
     <title>Blind Test</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="./electric-guitar.png" type="img/png">
     <script src="./js/play.js"></script>
     <script src="./js/submit.js"></script>
 </head>
@@ -29,9 +30,10 @@
         document.getElementById('songinput').addEventListener('input', suggest);
         document.getElementById('songinput').addEventListener('keydown', select);
 
-        document.getElementById('audio').addEventListener('play', startCountdown);
-        document.getElementById('audio').addEventListener('timeupdate', updateCountdown);
-        document.getElementById('audio').addEventListener('ended', timeUp);
+        const audio = document.getElementById('audio');
+        audio.addEventListener('timeupdate', updateCountdown);
+        audio.addEventListener('ended', timeUp);
+        navigator.mediaSession.setActionHandler('pause', () => {});
 
         document.addEventListener('keydown', (event) => {
             if (event.keyCode === 13) {

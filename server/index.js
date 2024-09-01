@@ -1,12 +1,21 @@
 const express = require('express');
+const session = require('express-session');
+const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 const mm = require('music-metadata');
 const bodyParser = require('body-parser');
 
+dotenv.config();
+
 const app = express();
 
 app.use(bodyParser.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
 
 let currentSong = null;
 

@@ -18,6 +18,7 @@ function playAudio() {
     audioSrc.src = "http://localhost:3000/play?time=" + new Date().getTime();
     audio.load();
     audio.play();
+    startCountdown();
 }
 
 function startCountdown() {
@@ -32,6 +33,9 @@ function updateCountdown() {
     const countdown = document.getElementById('countdown');
     const time = audio.currentTime;
     const duration = audio.duration;
+    if (isNaN(Math.ceil(duration - time))) {
+        return;
+    }
     countdown.innerHTML = Math.ceil(duration - time);
 }
 
