@@ -1,0 +1,6 @@
+services:
+  blind-test:
+    container_name: blind-test
+    build: .
+    ports:
+      - "3000:3000"
