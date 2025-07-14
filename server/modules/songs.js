@@ -27,10 +27,17 @@ async function getRandomSong() {
     const filePath = path.join(__dirname + '/../../songs/'+songList[randi]);
     const metadata = await mm.parseFile(filePath);
     const name = metadata.common.title;
+    const bitrate = metadata.format.bitrate;
+    const length = metadata.format.duration;
+    const duration = 10;
+    const startSec = Math.floor(Math.random() * (length - duration));
 
-    return {name:name, filePath:filePath, metadata:{
-        bitrate:metadata.format.bitrate, 
-        duration:metadata.format.duration
+    const time = Date.now();
+
+    return {name:name, filePath:filePath, time: time, data:{
+        bitrate:bitrate, 
+        duration:duration,
+        startSec:startSec
     }};
 }
 

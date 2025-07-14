@@ -1,11 +1,25 @@
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    flex-direction: row;
     font-family: 'Times New Roman', Times, serif;
     background-color: white;
     color: black
+}
+
+.playerpanel {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    padding-left: 0px;
+    border-left: 1px solid #ccc;
+}
+
+.game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
 }
 
 button {
@@ -19,6 +33,7 @@ button {
     border: none;
     cursor: pointer;
     width: 40%;
+    font-size: 1em;
 }
 
 button:hover {
@@ -32,6 +47,7 @@ input[type=text] {
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    font-size: 1em;
 }
 
 .autocomplete {
@@ -69,10 +85,35 @@ input[type=text] {
 }
 
 #countdown {
-    font-size: 3em;
+    font-size: 7em;
 }
 
 #song {
     margin-top: 0.5em;
     font-size: 2em;
+}
+
+#playerlist {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+#playerlist li {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2em;
+}
+
+h3 {
+    padding-left: 20px;
+    font-size: 1.5em;
+}
+
+.playerfinished {
+    color: green;
+    font-weight: bold;
 }

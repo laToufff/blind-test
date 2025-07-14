@@ -6,40 +6,69 @@
     <link rel="icon" href="./electric-guitar.png" type="img/png">
     <script src="./js/play.js"></script>
     <script src="./js/submit.js"></script>
+    <script src="./js/players.js"></script>
 </head>
 <body>
-    <h2>Endless Blind Test</h2>
-
-    <audio id="audio">
-        <source id="audio_src" src="http://localhost:3000/play" type="audio/mpeg">
-    </audio>
-
-    <div id="countdown">10</div>
-    <div id="playing">Click Play</div>
-    <br>
-
-    <button id=playbutton>Play</button>
-
-    <div class="autocomplete">
-        <input type="text" id="songinput" placeholder="Enter the song name...">
+    <div class="game">
+        <h2>Endless Blind Test</h2>
+    
+        <audio id="audio">
+            <source id="audio_src" type="audio/mpeg">
+        </audio>
+        
+        <div id="countdown">10</div>
+        <div id="playing">Click Play</div>
+        <br>
+        
+        <button id=playbutton>Play</button>
+        
+        <div class="autocomplete">
+            <input type="text" id="songinput" placeholder="Enter the song name...">
+        </div>
+        <div id="song"></div>
+        <div id="result"></div>
     </div>
-    <div id="song"></div>
-    <div id="result"></div>
-
+    <div class="playerpanel">
+        <h3>Players</h3>
+        <ul id="playerlist"></ul>
+    </div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-
+        
         socket.on('connect', () => {
-            console.log('Connected to server');
-            
-            socket.on("songlist", (songs) => {
-                songList = songs;
-            });
+            let playerList = [];
+            let username = prompt("Enter your username:");
+            if (!username) {
+                username = "Someone";
+            }
 
-            socket.on('play', () => {
-                playAudio();
-            })
+            socket.emit('join', username);
+            console.log('Connected to server');
+        });
+
+        socket.on("songlist", (songs) => {
+            songList = songs;
+        });
+
+        socket.on('play', () => {
+            updatePlayerList();
+            playAudio();
+        });
+
+        socket.on('playerlist', (players) => {
+            playerList = players;
+            updatePlayerList();
+        });
+
+        socket.on('playerfinish', data => {
+            const player = playerList.find(p => p.id === data.id);
+            console.log(`Player ${player.username} finished in ${data.time} ms`);
+            if (player) {
+                player.finishTime = data.time;
+                setPlayerFinishTime(player);
+            }
         });
     </script>
     <script>
@@ -59,6 +88,7 @@
                 if (document.getElementById('songinput') === document.activeElement) {
                     return;
                 }
+                event.preventDefault();
                 document.getElementById("playbutton").click();
             }
         });

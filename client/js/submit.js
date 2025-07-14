@@ -67,7 +67,7 @@ function select(e) {
             if (children.length === 1) {
                 children[0].click();
             }
-            if (selectedIndex !== undefined) {
+            else if (selectedIndex !== undefined) {
                 children[selectedIndex].click();
             }
         }

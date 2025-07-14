@@ -9,6 +9,7 @@ const { Server } = require("socket.io")
 
 const stream = require('./modules/streaming');
 const { getRandomSong, getSongNames } = require('./modules/songs');
+const { addPlayer, removePlayer, resetPlayers, setFinishTime, getPlayerList } = require('./modules/players');
 
 dotenv.config();
 
@@ -32,19 +33,34 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', async (socket) => {
-    console.log('A user connected');
-
     const songList = await getSongNames();
     socket.emit('songlist', songList);
 
     socket.on('submit', async (value, callback) => {
         const isCorrect = value.toLowerCase() === currentSong.name.toLowerCase();
+        if (isCorrect) {
+            const finishTime = Date.now() - currentSong.time;
+            setFinishTime(socket.id, finishTime);
+            console.log(`${socket.id} guessed correctly: ${value} in ${finishTime} ms`);
+            io.emit('playerfinish', { id: socket.id, time: finishTime });
+        }
         callback(isCorrect);
     });
 
     socket.on('start', async () => {
         currentSong = await getRandomSong();
         io.emit('play');
+        console.log('New song started:', currentSong.name);
+    });
+
+    socket.on('join', (username) => {
+        addPlayer(socket.id, username);
+        io.emit('playerlist', getPlayerList());
+    });
+
+    socket.on('disconnect', () => {
+        removePlayer(socket.id);
+        io.emit('playerlist', getPlayerList());
     });
 });
 
