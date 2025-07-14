@@ -26,6 +26,10 @@
     <div id="song"></div>
     <div id="result"></div>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+    </script>
     <script>
         document.getElementById('songinput').addEventListener('input', suggest);
         document.getElementById('songinput').addEventListener('keydown', select);
@@ -44,6 +48,5 @@
             }
         });
     </script>
-
 </body>
 </html>

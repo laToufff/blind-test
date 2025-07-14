@@ -1,9 +1,11 @@
 const express = require('express');
-const session = require('express-session');
+const { createServer } = require('http');
+//const session = require('express-session');
 const dotenv = require('dotenv');
 const path = require('path');
 const mm = require('music-metadata');
 const bodyParser = require('body-parser');
+const { Server } = require("socket.io")
 
 const stream = require('./modules/streaming');
 const { getSongList, getSongNames } = require('./modules/songs');
@@ -11,20 +13,26 @@ const { getSongList, getSongNames } = require('./modules/songs');
 dotenv.config();
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server)
 
 app.use(bodyParser.json());
-app.use(session({
+/*app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true
-}));
+}));*/
 
-let currentSong = {};
+let currentSong = "";
 
 app.use(express.static(path.join(__dirname, '/../client')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../client/index.html'));
+});
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
 });
 
 app.get('/play', async (req, res) =>{
@@ -35,7 +43,7 @@ app.get('/play', async (req, res) =>{
     const metadata = await mm.parseFile(filePath);
 
     const name = await stream(filePath, metadata, res);
-    currentSong[req.session.id] = name;
+    currentSong = name;
 });
 
 app.get('/songs', (req, res) => {
@@ -45,21 +53,19 @@ app.get('/songs', (req, res) => {
 });
 
 app.get('/currentsong', (req, res) => {
-    const song = currentSong[req.session.id];
-    delete currentSong[req.session.id];
-    res.send(song);
+    res.send(currentSong);
 
 });
 
 app.post('/submit', (req, res) => {
     const songname = req.body.songname;
-    if (songname.toLowerCase() === currentSong[req.session.id].toLowerCase()) {
+    if (songname.toLowerCase() === currentSong.toLowerCase()) {
         res.send(true);
     } else {
         res.send(false);
     }
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
