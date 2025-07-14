@@ -8,7 +8,7 @@ function getSongList() {
     return songList;
 }
 
-async function getSongNames(callback) {
+async function getSongNames() {
     let songNames = [];
     const songList = getSongList();
     for (const song of songList) {
@@ -17,7 +17,21 @@ async function getSongNames(callback) {
         const name = metadata.common.title;
         songNames.push(name);
     };
-    callback(songNames);
+    return songNames;
 }
 
-module.exports = { getSongList, getSongNames };
+async function getRandomSong() {
+    const songList = getSongList();
+    const randi = Math.floor(Math.random() * songList.length);
+
+    const filePath = path.join(__dirname + '/../../songs/'+songList[randi]);
+    const metadata = await mm.parseFile(filePath);
+    const name = metadata.common.title;
+
+    return {name:name, filePath:filePath, metadata:{
+        bitrate:metadata.format.bitrate, 
+        duration:metadata.format.duration
+    }};
+}
+
+module.exports = { getSongNames, getRandomSong };

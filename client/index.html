@@ -18,7 +18,7 @@
     <div id="playing">Click Play</div>
     <br>
 
-    <button id=playbutton onclick="playAudio()">Play</button>
+    <button id=playbutton>Play</button>
 
     <div class="autocomplete">
         <input type="text" id="songinput" placeholder="Enter the song name...">
@@ -29,10 +29,25 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            
+            socket.on("songlist", (songs) => {
+                songList = songs;
+            });
+
+            socket.on('play', () => {
+                playAudio();
+            })
+        });
     </script>
     <script>
         document.getElementById('songinput').addEventListener('input', suggest);
         document.getElementById('songinput').addEventListener('keydown', select);
+        document.getElementById('playbutton').addEventListener('click', () => {
+            socket.emit('start');
+        });
 
         const audio = document.getElementById('audio');
         audio.addEventListener('timeupdate', updateCountdown);

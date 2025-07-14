@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const { Server } = require("socket.io")
 
 const stream = require('./modules/streaming');
-const { getSongList, getSongNames } = require('./modules/songs');
+const { getRandomSong, getSongNames } = require('./modules/songs');
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
     saveUninitialized: true
 }));*/
 
-let currentSong = "";
+let currentSong = {};
 
 app.use(express.static(path.join(__dirname, '/../client')));
 
@@ -31,39 +31,30 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../client/index.html'));
 });
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('A user connected');
-});
 
-app.get('/play', async (req, res) =>{
-    const songList = getSongList();
-    const randi = Math.floor(Math.random() * songList.length);
+    const songList = await getSongNames();
+    socket.emit('songlist', songList);
 
-    const filePath = path.join(__dirname + '/../songs/'+songList[randi]);
-    const metadata = await mm.parseFile(filePath);
+    socket.on('submit', async (value, callback) => {
+        const isCorrect = value.toLowerCase() === currentSong.name.toLowerCase();
+        callback(isCorrect);
+    });
 
-    const name = await stream(filePath, metadata, res);
-    currentSong = name;
-});
-
-app.get('/songs', (req, res) => {
-    getSongNames(songNames => {
-        res.send(songNames);
+    socket.on('start', async () => {
+        currentSong = await getRandomSong();
+        io.emit('play');
     });
 });
 
-app.get('/currentsong', (req, res) => {
-    res.send(currentSong);
-
+app.get('/play', async (req, res) =>{
+    await stream(currentSong, res);
 });
 
-app.post('/submit', (req, res) => {
-    const songname = req.body.songname;
-    if (songname.toLowerCase() === currentSong.toLowerCase()) {
-        res.send(true);
-    } else {
-        res.send(false);
-    }
+app.get('/currentsong', (req, res) => {
+    res.send(currentSong.name);
+
 });
 
 server.listen(3000, () => {

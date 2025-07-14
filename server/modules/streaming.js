@@ -1,9 +1,8 @@
 const fs = require('fs');
 
-async function stream(filePath, metadata, res) {
-    const bitrate = metadata.format.bitrate;
-    const length = metadata.format.duration;
-    const name = metadata.common.title;
+async function stream(song, res) {
+    const bitrate = song.metadata.bitrate;
+    const length = song.metadata.duration;
 
     const bytesPerSecond = bitrate / 8;
     const duration = 10;
@@ -17,8 +16,7 @@ async function stream(filePath, metadata, res) {
         'Content-Range': 'bytes ' + startByte + '-' + endByte + '/' + duration * bytesPerSecond,
         'Accept-Ranges': 'bytes'
     });
-    fs.createReadStream(filePath, { start: startByte, end: endByte }).pipe(res);
-    return name;
+    fs.createReadStream(song.filePath, { start: startByte, end: endByte }).pipe(res);
 }
 
 module.exports = stream;

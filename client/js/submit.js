@@ -1,15 +1,10 @@
 let songList = [];
-var selectedIndex;
+let selectedIndex;
 
 async function suggest() {
     const input = document.getElementById('songinput');
     const songDiv = document.getElementById('song');
     const resultDiv = document.getElementById('result');
-    
-    if (songList.length === 0) {
-        const res = await fetch('/songs');
-        songList = await res.json();
-    }
     
     for (const child of input.parentNode.children) {
         if (child.id === 'ac-list') {
@@ -80,14 +75,10 @@ function select(e) {
 }
 
 async function submit(value) {
-    const submitRes = await fetch('/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ songname: value })
+    return new Promise((resolve) => {
+        socket.emit('submit', value, (result) => {
+            resolve(result);
+        });
     });
-    const result = await submitRes.json();
-    return result;
 }
 
