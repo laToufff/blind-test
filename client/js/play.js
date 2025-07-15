@@ -15,7 +15,7 @@ function playAudio() {
     songDiv.innerText = "";
     resultDiv.innerText = "";
 
-    audioSrc.src = "http://localhost:3000/play?time=" + new Date().getTime();
+    audioSrc.src = "/play?time=" + new Date().getTime();
     audio.load();
     audio.play();
     startCountdown();
@@ -40,7 +40,7 @@ function updateCountdown() {
 }
 
 async function getCurrentSong() {
-    const response = await fetch('http://localhost:3000/currentsong', {method: 'GET'});
+    const response = await fetch('/currentsong', {method: 'GET'});
     const song = await response.text();
     return song;
 }

@@ -64,11 +64,11 @@ function select(e) {
         } else if (e.keyCode === 13) {
             // Enter
             e.preventDefault();
-            if (children.length === 1) {
-                children[0].click();
-            }
-            else if (selectedIndex !== undefined) {
+            if (selectedIndex !== undefined) {
                 children[selectedIndex].click();
+            }
+            else if (children.length === 1) {
+                children[0].click();
             }
         }
     }
