@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="login">
+        <label for="username">Enter a username :</label>
+        <input type="text" id="username" name="username" required autocomplete="off" placeholder="Your username...">
+        <button type="submit">Join !</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        document.getElementById('login').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            console.log(`Username entered: ${username}`);
+            if (username) {
+                socket.emit('login', username);
+            }
+        });
+    </script>
+    <script src="../js/redirect.js"></script>
+</body>
+</html>

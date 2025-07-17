@@ -3,6 +3,7 @@
 <head>
     <title>Blind Test</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/game.css">
     <link rel="icon" href="./electric-guitar.png" type="img/png">
     <script src="./js/submit.js"></script>
     <script src="./js/players.js"></script>
@@ -43,14 +44,11 @@
         const socket = io();
         
         socket.on('connect', () => {
-            let playerList = [];
-            let username = prompt("Enter your username:");
-            if (!username) {
-                username = "Someone";
-            }
-            
-            socket.emit('join', username);
-            console.log('Connected to server');
+            socket.emit('join');
+        });
+
+        socket.on("session_id", (session_id)  => {
+            document.cookie = `session_id=${session_id}; path=/;`;
         });
         
         socket.on("songlist", (songs) => {
@@ -79,6 +77,7 @@
     <script src="./js/play.js"></script>
     <script src="js/controls.js"></script>
     <script src="js/canvas-anim.js"></script>
+    <script src="js/redirect.js"></script>
     <script>
         document.getElementById('songinput').addEventListener('input', suggest);
         document.getElementById('songinput').addEventListener('keydown', select);

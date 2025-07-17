@@ -1,6 +1,6 @@
 const express = require('express');
 const { createServer } = require('http');
-//const session = require('express-session');
+const { parse } = require('cookie')
 const dotenv = require('dotenv');
 const path = require('path');
 const mm = require('music-metadata');
@@ -9,7 +9,7 @@ const { Server } = require("socket.io")
 
 const stream = require('./modules/streaming');
 const { getRandomSong, getSongNames } = require('./modules/songs');
-const { addPlayer, removePlayer, resetPlayers, setFinishTime, getPlayerList } = require('./modules/players');
+const pl = require('./modules/players');
 
 dotenv.config();
 
@@ -32,16 +32,42 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../client/index.html'));
 });
 
+io.use((socket, next) => {
+  var cookie = socket.request.headers.cookie;
+  if (cookie) {
+    cookie = parse(cookie)
+    const session_id = cookie.session_id;
+    if (session_id) {
+      socket.session_id = session_id;
+      next();
+    }
+  }
+  if(!socket.session_id) {
+    socket.session_id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    next();
+  }
+});
+
 io.on('connection', async (socket) => {
-    const songList = await getSongNames();
-    socket.emit('songlist', songList);
+    socket.emit("session_id", socket.session_id);
+
+    socket.on('join', async () => {
+        if (!pl.getPlayerById(socket.session_id)) {
+            socket.emit("redirect", "/login");
+            return;
+        } else {
+            const songList = await getSongNames();
+            socket.emit('songlist', songList);
+            pl.setPlayerOnline(socket.session_id, true);
+            io.emit('playerlist', pl.getPlayerList());
+        }
+    });
 
     socket.on('submit', async (value, callback) => {
         const isCorrect = value.toLowerCase() === currentSong.name.toLowerCase();
         if (isCorrect) {
             const finishTime = Date.now() - currentSong.time;
-            setFinishTime(socket.id, finishTime);
-            console.log(`${socket.id} guessed correctly: ${value} in ${finishTime} ms`);
+            pl.setFinishTime(socket.id, finishTime);
             io.emit('playerfinish', { id: socket.id, time: finishTime });
         }
         callback(isCorrect);
@@ -53,19 +79,24 @@ io.on('connection', async (socket) => {
         console.log('New song started:', currentSong.name);
     });
 
-    socket.on('join', (username) => {
-        addPlayer(socket.id, username);
-        io.emit('playerlist', getPlayerList());
+    socket.on('login', (username) => {
+        console.log(`${username} joined the game`);
+        pl.addPlayer(socket.session_id, username);
+        socket.emit('redirect', '/');
     });
 
     socket.on('disconnect', () => {
-        removePlayer(socket.id);
-        io.emit('playerlist', getPlayerList());
+        pl.setPlayerOnline(socket.session_id, false);
+        io.emit('playerlist', pl.getPlayerList());
     });
 });
 
 app.get('/play', async (req, res) =>{
     await stream(currentSong, res);
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../client/html/login.html'));
 });
 
 app.get('/currentsong', (req, res) => {

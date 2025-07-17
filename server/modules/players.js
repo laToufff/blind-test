@@ -5,6 +5,7 @@ function addPlayer(id, username) {
         playerList[id] = {
             id: id,
             username: username,
+            online: false,
             finishTime: -1
         };
     }
@@ -31,7 +32,17 @@ function setFinishTime(id, time) {
 }
 
 function getPlayerList() {
-    return Object.values(playerList);
+    return Object.values(playerList).filter(player => player.online);
+}
+
+function getPlayerById(id) {
+    return playerList[id] || null;
+}
+
+function setPlayerOnline(id, online) {
+    if (playerList[id]) {
+        playerList[id].online = online;
+    }
 }
 
 module.exports = {
@@ -39,5 +50,7 @@ module.exports = {
     removePlayer,
     resetPlayers,
     setFinishTime,
-    getPlayerList
+    getPlayerList,
+    getPlayerById,
+    setPlayerOnline
 };
