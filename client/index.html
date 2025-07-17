@@ -23,8 +23,9 @@
         <div id="playing">Click Play</div>
 
         <br>
-        
-        <button id=playbutton>Play</button>
+        <!--
+            <button id=playbutton>Play</button>
+        -->
         
         <div class="autocomplete">
             <input type="text" id="songinput" placeholder="Enter the song name...">
@@ -77,14 +78,14 @@
     </script>
     <script src="./js/play.js"></script>
     <script src="js/controls.js"></script>
+    <script src="js/canvas-anim.js"></script>
     <script>
         document.getElementById('songinput').addEventListener('input', suggest);
         document.getElementById('songinput').addEventListener('keydown', select);
-        document.getElementById('playbutton').addEventListener('click', () => {
+        /*document.getElementById('playbutton').addEventListener('click', () => {
             socket.emit('start');
-        });
+        });*/
 
-        const audio = document.getElementById('audio');
         audio.addEventListener('timeupdate', updateCountdown);
         audio.addEventListener('ended', timeUp);
         navigator.mediaSession.setActionHandler('pause', () => {});
@@ -95,7 +96,11 @@
                     return;
                 }
                 event.preventDefault();
-                document.querySelector("canvas").click();
+                if (isController) {
+                    document.querySelector("canvas").click();
+                } else {
+                    document.getElementById("skip").click();
+                }
             }
         });
     </script>
