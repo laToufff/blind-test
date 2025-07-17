@@ -1,52 +1,16 @@
 body {
-    display: flex;
-    flex-direction: row;
     font-family: 'Times New Roman', Times, serif;
     background-color: white;
-    color: black
+    color: black;
 }
 
-.playerpanel {
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    padding-left: 0px;
-    border-left: 1px solid #ccc;
-}
-
-.game {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 80%;
-}
-
-#controls {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-canvas {
-    margin: 30px;
-    margin-top: 0px;
-    width: 200px;
-    height: 200px;
-}
-
-.controller {
-    border: 2px solid black; 
-    border-radius: 10px;
+input[type=text] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
     box-sizing: border-box;
-    cursor: pointer;
-}
-
-#skip {
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    cursor: pointer;
+    font-size: 1em;
 }
 
 button {
@@ -59,7 +23,6 @@ button {
     margin: 8px 0;
     border: none;
     cursor: pointer;
-    width: 40%;
     font-size: 1em;
 }
 
@@ -67,82 +30,17 @@ button:hover {
     opacity: 0.8;
 }
 
-input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 1em;
-}
-
-.autocomplete {
-    width: 40%;
-    position: relative;
-    display: inline-block;
-}
-
-.autocomplete-items {
-    position: absolute;
-    border: 1px solid #d4d4d4;
-    border-bottom: none;
-    border-top: none;
-    z-index: 99;
-    top: 100%;
-    left: 0;
-    right: 0;
-}
-
-.autocomplete-items div {
-    padding: 10px;
-    cursor: pointer;
-    background-color: #fff;
-    border-bottom: 1px solid #d4d4d4;
-    color: black;
-}
-
-.autocomplete-items div:hover {
-    /*when hovering an item:*/
-    background-color: #e9e9e9;
-}
-
-.selected {
-    background-color: #cacaca !important;
-}
-
-#countdown {
-    font-size: 7em;
-    width: 120px;
+h1 {
     text-align: center;
-}
-
-#song {
-    margin-top: 0.5em;
-    font-size: 2em;
-}
-
-#playerlist {
-    list-style-type: none;
-    padding-left: 0px;
-}
-
-#playerlist li {
-    padding: 10px 20px;
-    border-bottom: 1px solid #ccc;
 }
 
 h2 {
     text-align: center;
     font-size: 2em;
+    text-transform: capitalize;
 }
 
 h3 {
     padding-left: 20px;
     font-size: 1.5em;
-}
-
-.playerfinished {
-    color: green;
-    font-weight: bold;
 }
