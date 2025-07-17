@@ -22,6 +22,33 @@ body {
     width: 80%;
 }
 
+#controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+canvas {
+    margin: 30px;
+    margin-top: 0px;
+    width: 200px;
+    height: 200px;
+}
+
+.controller {
+    border: 2px solid black; 
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#skip {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    cursor: pointer;
+}
+
 button {
     display: flex;
     position: relative;
@@ -86,6 +113,8 @@ input[type=text] {
 
 #countdown {
     font-size: 7em;
+    width: 120px;
+    text-align: center;
 }
 
 #song {

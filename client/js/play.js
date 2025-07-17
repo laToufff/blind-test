@@ -63,4 +63,6 @@ async function timeUp() {
     if (resultDiv.innerText !== "Correct!") {
         resultDiv.innerText = "Too slow!";
     }
+
+    drawPlay();
 }
