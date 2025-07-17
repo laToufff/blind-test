@@ -1,3 +1,5 @@
+let playerList = [];
+
 function updatePlayerList() {
     const playerListElement = document.getElementById('playerlist');
     playerListElement.innerHTML = '';

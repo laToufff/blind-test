@@ -14,11 +14,7 @@ function playAudio() {
     audioSrc.src = "/play?time=" + new Date().getTime();
     audio.load();
     audio.play();
-    audioContext.resume().then(() => {
-        console.log('Audio context resumed');
-    }).catch((error) => {
-        console.error('Error resuming audio context:', error);
-    });
+    audioContext.resume();
     requestAnimationFrame(drawWave);
     startCountdown();
 }
@@ -66,10 +62,6 @@ async function timeUp() {
         resultDiv.innerText = "Too slow!";
     }
 
-    audioContext.suspend().then(() => {
-        console.log('Audio context suspended');
-    }).catch((error) => {
-        console.error('Error suspending audio context:', error);
-    });
+    audioContext.suspend();
     drawPlay();
 }
