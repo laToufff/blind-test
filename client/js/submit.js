@@ -20,14 +20,20 @@ async function suggest() {
     acList.setAttribute('id', 'ac-list');
     acList.setAttribute('class', 'autocomplete-items');
     input.parentNode.appendChild(acList);
-    let validSongs = songList.filter(song => song.toLowerCase().startsWith(value.toLowerCase()));
+    let validSongs = songList.filter(song => song.toLowerCase().indexOf(value.toLowerCase()) > -1);
+    validSongs.sort((a, b) =>
+        a.toLowerCase().indexOf(value.toLowerCase()) - b.toLowerCase().indexOf(value.toLowerCase())
+    );
     for (const song of validSongs) {
         var div = document.createElement('div');
-        div.innerHTML = "<strong>" + song.substr(0, value.length) + "</strong>";
-        div.innerHTML += song.substr(value.length);
-        div.innerHTML += "<input type='hidden' value='" + song + "'>";
+        let index = song.toLowerCase().indexOf(value.toLowerCase());
+        div.innerHTML = song.substr(0, index)
+        div.innerHTML += "<strong>" + song.substr(index, value.length) + "</strong>";
+        div.innerHTML += song.substr(index+value.length);
+        div.innerHTML += `<input type='hidden' value="` + song + `">`;
         div.addEventListener('click', async function() {
             const val = this.getElementsByTagName('input')[0].value;
+            console.log(val);
             const result = await submit(val);
             input.value = '';
             if (result === true) {

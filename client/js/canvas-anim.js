@@ -34,6 +34,7 @@ function drawWave() {
         barHeight /= barDensity;*/
         let barHeight = dataArray[barDensity * i+6];
         barHeight = (barHeight/255) * height;
+        barHeight = Math.max(10, barHeight);
         /*barHeight = barHeight - (barNbr-i) * 20;
         if (barHeight < 0) {
             barHeight = 0;
