@@ -15,7 +15,7 @@ function playAudio() {
     audio.load();
     audio.play();
     audioContext.resume();
-    requestAnimationFrame(drawWave);
+    startAnim();
     startCountdown();
 }
 

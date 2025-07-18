@@ -67,8 +67,8 @@ io.on('connection', async (socket) => {
         const isCorrect = value.toLowerCase() === currentSong.name.toLowerCase();
         if (isCorrect) {
             const finishTime = Date.now() - currentSong.time;
-            pl.setFinishTime(socket.id, finishTime);
-            io.emit('playerfinish', { id: socket.id, time: finishTime });
+            pl.setFinishTime(socket.session_id, finishTime);
+            io.emit('playerfinish', { id: socket.session_id, time: finishTime });
         }
         callback(isCorrect);
     });

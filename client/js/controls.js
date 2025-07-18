@@ -35,13 +35,17 @@ drawPlay();
 
 function startGame() {
     if (isController) {
-        isController = false;
+        startAnim();
+        socket.emit("start");
+    }
+}
+
+function startAnim() {
+    isController = false;
         canvas.removeEventListener("click", startGame);
         canvas.classList.remove("controller");
         ctx.clearRect(0, 0, width, height);
         countdown.hidden = false;
         skipButton.hidden = false;
-
-        socket.emit("start");
-    }
+        requestAnimationFrame(drawWave);
 }
